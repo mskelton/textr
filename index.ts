@@ -1,10 +1,24 @@
 import { XMLParser } from 'fast-xml-parser'
 
-const [filename] = process.argv.slice(2)
-const xml = await parse()
-const results = analyze(xml)
+const LOVE_SYMBOLS = [
+	'\u2764\uFE0F', // :heart:
+	'\uD83D\uDC96', // :sparkling_heart:
+	'\uD83E\uDD70', // :smiling_face_with_3_hearts:
+	'\uD83D\uDC93', // :heartbeat:
+	'\uD83D\uDC9D', // :heart_with_ribbon:
+	'\uD83D\uDE0D', // :heart_eyes:
+	'\uD83D\uDE18', // :kissing_heart:
+]
 
-console.log(JSON.stringify(results, null, 2))
+const [filename, type] = process.argv.slice(2)
+const xml = await parse()
+const messages = analyze(xml)
+
+if (type === '--json') {
+	console.log(JSON.stringify(messages, null, 2))
+} else {
+	report(messages)
+}
 
 async function parse() {
 	const file = await Bun.file(filename).text()
@@ -76,4 +90,39 @@ type Message = {
 	timestamp: number
 	sender: string
 	body: string
+}
+
+function report(allMessages: Message[]) {
+	const messages = allMessages.filter((x) => x.type === 'message')
+	const myMessages = messages.filter((x) => x.sender === 'me')
+	const theirMessages = messages.filter((x) => x.sender === 'them')
+
+	const reactions = allMessages.filter((x) => x.type === 'reaction')
+	const myReactions = messages.filter((x) => x.sender === 'me')
+	const theirReactions = messages.filter((x) => x.sender === 'them')
+
+	const love = countLove(allMessages)
+	const myLove = countLove(allMessages.filter((x) => x.sender === 'me'))
+	const theirLove = countLove(allMessages.filter((x) => x.sender === 'them'))
+
+	console.log(' Total messages:', messages.length)
+	console.log('    My messages:', myMessages.length)
+	console.log(' Their messages:', theirMessages.length)
+
+	console.log('Total reactions:', reactions.length)
+	console.log('   My reactions:', myReactions.length)
+	console.log('Their reactions:', theirReactions.length)
+
+	console.log('     Total love:', love)
+	console.log('        My love:', myLove)
+	console.log('     Their love:', theirLove)
+}
+
+function countLove(messages: Message[]) {
+	return messages.reduce(
+		(count, x) =>
+			count +
+			LOVE_SYMBOLS.reduce((sum, s) => sum + (x.body.split(s).length - 1), 0),
+		0,
+	)
 }
