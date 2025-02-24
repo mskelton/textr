@@ -98,8 +98,8 @@ function report(allMessages: Message[]) {
 	const theirMessages = messages.filter((x) => x.sender === 'them')
 
 	const reactions = allMessages.filter((x) => x.type === 'reaction')
-	const myReactions = messages.filter((x) => x.sender === 'me')
-	const theirReactions = messages.filter((x) => x.sender === 'them')
+	const myReactions = reactions.filter((x) => x.sender === 'me')
+	const theirReactions = reactions.filter((x) => x.sender === 'them')
 
 	const love = countLove(allMessages)
 	const myLove = countLove(allMessages.filter((x) => x.sender === 'me'))
