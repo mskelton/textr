@@ -105,17 +105,17 @@ function report(allMessages: Message[]) {
 	const myLove = countLove(allMessages.filter((x) => x.sender === 'me'))
 	const theirLove = countLove(allMessages.filter((x) => x.sender === 'them'))
 
-	console.log(' Total messages:', messages.length)
-	console.log('    My messages:', myMessages.length)
-	console.log(' Their messages:', theirMessages.length)
+	console.log(` Total messages: ${messages.length}`)
+	console.log(`    My messages: ${myMessages.length}`)
+	console.log(` Their messages: ${theirMessages.length}`)
 
-	console.log('Total reactions:', reactions.length)
-	console.log('   My reactions:', myReactions.length)
-	console.log('Their reactions:', theirReactions.length)
+	console.log(`Total reactions: ${reactions.length}`)
+	console.log(`   My reactions: ${myReactions.length}`)
+	console.log(`Their reactions: ${theirReactions.length}`)
 
-	console.log('     Total love:', love)
-	console.log('        My love:', myLove)
-	console.log('     Their love:', theirLove)
+	console.log(`     Total love: ${love}`)
+	console.log(`        My love: ${myLove}`)
+	console.log(`     Their love: ${theirLove}`)
 }
 
 function countLove(messages: Message[]) {
